@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { AnnotationViewer } from 'react-mindee-js';
-import { EditPencil, Cancel, Check } from 'iconoir-react';
+import { EditPencil, Cancel, Check, Hourglass } from 'iconoir-react';
 import 'filepond/dist/filepond.min.css';
 import './App.css';
 import FilePondPluginFileEncode from 'filepond-plugin-file-encode';
@@ -20,6 +20,7 @@ function App() {
   const [features, setFeatures] = useState([]);
   const [annotationData, setAnnotationData] = useState(null);
   const [editedText, setEditedText] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   let pond = null;
 
@@ -116,7 +117,6 @@ function App() {
       shapes: shapes
     };
   };
-  
 
   const handlePredictions = async () => {
     try {
@@ -128,7 +128,7 @@ function App() {
       if (!pond) {
         throw new Error('Pond not initiated');
       }
-  
+      setLoading(true);
       // Create a FormData object to hold the file data
       const formData = new FormData();
       formData.append('document', pond.getFile().getFileEncodeBase64String());    
@@ -151,7 +151,7 @@ function App() {
 
       const preparedInvoiceData = prepareInvoiceData(invoiceData.document.inference.prediction, invoiceData.document.inference.product.features, image);
       setAnnotationData(preparedInvoiceData);
-  
+      setLoading(false);
       // Make the second API call to get all the text
       const visionResponse = await fetch('https://api.mindee.net/v1/products/mindee/mindee_vision/v1/predict', {
         method: 'POST',
@@ -190,6 +190,9 @@ function App() {
   return (
     <div className="content-container">
     <div className="mindee-container">
+      { loading && (
+        <Hourglass className='spin' />
+      )}
       {annotationData && (
         <AnnotationViewer 
           data={annotationData} 
@@ -213,6 +216,7 @@ function App() {
             pond = ref;
           }}
           onupdatefiles={setFiles}
+          onaddfile={handlePredictions}
           allowMultiple={false}
           maxFiles={1}
           maxFileSize="10MB"
@@ -220,7 +224,6 @@ function App() {
           acceptedFileTypes={['application/pdf', 'image/tiff', 'image/jpeg', 'image/png', 'image/heic', 'image/webp']}
           labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
         />
-        <button onClick={handlePredictions}>Submit</button>
       </div>
       <div className="cards">
         { features && (
