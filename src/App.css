@@ -1,0 +1,57 @@
+.content-container {
+  display: flex;
+  height: 100vh;
+}
+
+.mindee-container {
+  width: 70%;
+  border-right: 1px solid #ccc; /* Optional: adds a border between the sections */
+}
+
+.cards-container {
+  width: 30%;
+  padding: 0 20px; /* Adds some padding inside the cards container */
+}
+
+.api-key-input, .file-upload {
+  margin-bottom: 20px;
+}
+
+.api-key-input label, .file-upload button {
+  display: block;
+  margin: 10px 0;
+}
+
+.card {
+  position: relative;
+  padding: 16px;
+  border: 1px solid #ccc;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.key {
+  font-weight: bold;
+}
+
+.value, .key {
+  margin-bottom: 8px;
+}
+
+.edit-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.filepond--credits {
+  display: none;
+}
